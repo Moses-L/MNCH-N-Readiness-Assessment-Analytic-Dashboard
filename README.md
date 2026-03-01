@@ -1,7 +1,7 @@
-# MNCH+N Facility Readiness Informatics Dashboard
+# MNCH & Nutrition Readiness Assessment Analytic Dashboard
 
 ## Overview
-This project represents a full end-to-end health informatics pipeline, spanning digital field data collection to interactive analytic dashboard development. It was designed to assess, visualize, and interpret facility readiness for maternal, newborn, child health, and nutrition (MNCH+N) service delivery across **106 health facilities in 16 Local Government Areas (LGAs)** of Bauchi State, Nigeria. Implemented under the **EpiC (Meeting Targets and Maintaining Epidemic Control)** programme, funded by the U.S. Department of State in partnership with the Bauchi State Ministry of Health/Primary Health Care Board, the initiative demonstrates a rare example of applied health informatics in a resource-limited setting.  
+This project represents a full end-to-end health informatics pipeline, spanning digital field data collection to interactive analytic dashboard development. It was designed to assess, visualize, and interpret facility readiness for Maternal, Newborn, Child Health, and Nutrition (MNCH+N) service delivery across **106 health facilities in 16 Local Government Areas (LGAs)** of Bauchi State, Nigeria. Implemented under the **EpiC (Meeting Targets and Maintaining Epidemic Control)** programme, funded by the U.S. Department of State in partnership with the Bauchi State Ministry of Health/Primary Health Care Board, the initiative demonstrates a rare example of applied health informatics in a resource-limited setting.  
 
 The pipeline covered the complete data lifecycle: **instrument design → digital field collection → data cleaning and aggregation → interactive visualization**. This integrated approach replaced fragmented paper-based assessments with a structured, digital system that improved data quality, turnaround time, and usability.
 
