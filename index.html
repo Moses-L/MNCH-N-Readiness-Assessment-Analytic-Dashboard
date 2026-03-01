@@ -6,6 +6,8 @@
 <title>Bauchi State MNCH+N Readiness Assessment Dashboard</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#0B1F3A;--blue:#1A5FA8;--sky:#2E86C1;--teal:#0E7C7B;--green:#1A8754;--amber:#D4820A;--red:#C0392B;--purple:#6C3483;--lgray:#F4F6FA;--mgray:#DDE3ED;--dgray:#8A97AB;--text:#1C2B3A;--cr:12px;--sh:0 2px 16px rgba(11,31,58,0.10);--shl:0 8px 32px rgba(11,31,58,0.18);}
@@ -105,6 +107,15 @@ body{font-family:'DM Sans',sans-serif;background:#EEF1F7;color:var(--text);min-h
 .tbl-wrap{overflow:auto;max-height:420px;}
 @media(max-width:900px){.g2,.g3,.g4,.g5,.g6{grid-template-columns:1fr 1fr;}.g4,.g5,.g6{grid-template-columns:1fr 1fr;}.sp2,.sp3{grid-column:span 1;}}
 @media(max-width:600px){.g2,.g3,.g4,.g5,.g6{grid-template-columns:1fr;}.main{padding:12px 12px 30px;}}
+.leaflet-popup-content-wrapper{border-radius:10px;box-shadow:0 4px 20px rgba(11,31,58,.18);font-family:'DM Sans',sans-serif;}
+.leaflet-popup-content{margin:10px 14px;font-size:13px;}
+.map-popup-title{font-weight:600;color:var(--navy);margin-bottom:4px;font-size:13.5px;}
+.map-popup-row{display:flex;justify-content:space-between;gap:16px;font-size:12px;color:#444;padding:2px 0;}
+.map-popup-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;color:#fff;}
+.gis-lga-card{background:#f7f9fc;border:1px solid var(--mgray);border-radius:8px;padding:10px 14px;font-size:12px;}
+.gis-lga-card .lga-name{font-weight:600;color:var(--navy);font-size:13px;margin-bottom:4px;}
+.gis-lga-bar{height:6px;border-radius:3px;margin-top:4px;background:var(--mgray);}
+.gis-lga-fill{height:6px;border-radius:3px;}
 </style>
 </head>
 <body>
@@ -127,6 +138,7 @@ body{font-family:'DM Sans',sans-serif;background:#EEF1F7;color:var(--text);min-h
   </div>
   <nav class="nav">
     <button class="nav-btn active" onclick="switchTab('overview',this)">📊 Overview</button>
+    <button class="nav-btn" onclick="switchTab('gismap',this)">🗺️ GIS Map</button>
     <button class="nav-btn" onclick="switchTab('staff',this)">👥 Staff &amp; HRH</button>
     <button class="nav-btn" onclick="switchTab('mnch',this)">🤱 MNCH Services</button>
     <button class="nav-btn" onclick="switchTab('nutrition',this)">🥦 Nutrition</button>
@@ -1153,6 +1165,35 @@ body{font-family:'DM Sans',sans-serif;background:#EEF1F7;color:var(--text);min-h
     </div>
     <div id="table-phc" style="display:none">
       <div class="tbl-wrap"><table class="htbl" id="phcTable"></table></div>
+    </div>
+  </div>
+</div>
+
+<!-- GIS MAP TAB -->
+<div class="tab-panel" id="tab-gismap">
+  <div class="main">
+    <div style="margin-bottom:16px;">
+      <div class="card" style="padding:18px 22px;">
+        <div class="card-title"><div class="card-title-left"><span class="dot"></span>GIS Facility Map — Bauchi State MNCH+N</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:2px;">
+            <button class="chip active" onclick="setMapLayer('imss',this)" id="mapLayerBtn_imss">IMSS Score</button>
+            <button class="chip" onclick="setMapLayer('staff',this)" id="mapLayerBtn_staff">Staff Readiness</button>
+            <button class="chip" onclick="setMapLayer('drugs',this)" id="mapLayerBtn_drugs">Drug Availability</button>
+            <button class="chip" onclick="setMapLayer('equip',this)" id="mapLayerBtn_equip">Equipment</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+          <span style="font-size:12px;color:var(--dgray);">Circle size = facility score &nbsp;|&nbsp; Colour = performance tier</span>
+          <span style="display:flex;gap:8px;align-items:center;font-size:11.5px;">
+            <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#1A8754;"></span> High (≥80%)
+            <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#D4820A;margin-left:6px;"></span> Medium (60–79%)
+            <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#C0392B;margin-left:6px;"></span> Low (<60%)
+            <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#1A5FA8;margin-left:6px;border:2px solid #fff;"></span> Secondary
+          </span>
+        </div>
+        <div id="gis-map" style="height:560px;width:100%;border-radius:10px;border:1px solid var(--mgray);z-index:1;"></div>
+        <div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;" id="gis-lga-legend"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -2287,8 +2328,152 @@ function filterTables(){
 }
 
 // ═══════════════════════════════════════════════
-//  REFRESH ALL
+//  GIS MAP
 // ═══════════════════════════════════════════════
+// LGA centroid coordinates (Bauchi State, Nigeria)
+const LGA_COORDS = {
+  'Alkaleri':  [10.35, 10.92], 'Bauchi':    [10.31, 9.84],
+  'Dambam':    [11.75, 11.72], 'Darazo':    [10.47, 10.43],
+  'Dass':      [10.07, 10.10], 'Gamawa':    [12.09, 11.12],
+  'Ganjuwa':   [10.49, 9.68],  'Giade':     [11.51, 10.68],
+  'Itas/Gadau':[11.75, 10.73],"Jama'are":  [11.68, 10.27],
+  'Katagum':   [11.28, 11.05], 'Kirfi':     [10.18, 10.73],
+  'Misau':     [11.21, 10.27], 'Ningi':     [10.93, 9.60],
+  'Shira':     [12.04, 10.37], 'Toro':      [10.46, 9.07]
+};
+
+let gisMap = null;
+let gisMarkers = [];
+let activeMapLayer = 'imss';
+
+function getMarkerColor(val, hi=80, lo=60){
+  if(val >= hi) return '#1A8754';
+  if(val >= lo) return '#D4820A';
+  return '#C0392B';
+}
+
+function getLayerValue(f, layer){
+  if(layer === 'imss') return f.score;
+  if(layer === 'staff'){
+    const skilled = (f.skilled !== undefined) ? f.skilled : 0;
+    return Math.min(100, skilled * 10);
+  }
+  if(layer === 'drugs') return f.drug_pct !== undefined ? f.drug_pct : 0;
+  if(layer === 'equip') return f.equip_pct !== undefined ? f.equip_pct : 0;
+  return f.score;
+}
+
+function getLayerLabel(layer){
+  if(layer==='imss') return 'IMSS Score';
+  if(layer==='staff') return 'Staff Index';
+  if(layer==='drugs') return 'Drug Availability';
+  if(layer==='equip') return 'Equipment Score';
+  return 'Score';
+}
+
+function setMapLayer(layer, btn){
+  activeMapLayer = layer;
+  document.querySelectorAll('#tab-gismap .chip').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  updateGisMarkers();
+}
+
+function updateGisMarkers(){
+  if(!gisMap) return;
+  gisMarkers.forEach(m=>gisMap.removeLayer(m));
+  gisMarkers = [];
+
+  // Build combined facility list with LGA coordinates (jitter to separate)
+  const allFacs = [];
+  // PHC data
+  PHC.forEach(f=>{
+    const coords = LGA_COORDS[f.lga];
+    if(coords){
+      const jLat = coords[0] + (Math.random()-0.5)*0.18;
+      const jLng = coords[1] + (Math.random()-0.5)*0.18;
+      allFacs.push({...f, lat:jLat, lng:jLng, type:'PHC'});
+    }
+  });
+  // SEC data
+  SEC.forEach(f=>{
+    const coords = LGA_COORDS[f.lga];
+    if(coords){
+      const jLat = coords[0] + (Math.random()-0.5)*0.12;
+      const jLng = coords[1] + (Math.random()-0.5)*0.12;
+      allFacs.push({...f, lat:jLat, lng:jLng, type:'Secondary'});
+    }
+  });
+
+  const label = getLayerLabel(activeMapLayer);
+  allFacs.forEach(f=>{
+    const val = getLayerValue(f, activeMapLayer);
+    const color = f.type === 'Secondary' ? '#1A5FA8' : getMarkerColor(val);
+    const radius = f.type === 'Secondary' ? 10 + val*0.08 : 6 + val*0.06;
+    const circle = L.circleMarker([f.lat, f.lng], {
+      radius: Math.max(5, radius),
+      fillColor: color,
+      color: '#fff',
+      weight: 1.5,
+      opacity: 1,
+      fillOpacity: 0.82
+    });
+
+    const badgeColor = getMarkerColor(val);
+    circle.bindPopup(`
+      <div class="map-popup-title">${f.fac}</div>
+      <div class="map-popup-row"><span>LGA:</span><strong>${f.lga}</strong></div>
+      <div class="map-popup-row"><span>Type:</span><span class="map-popup-badge" style="background:${color}">${f.type}</span></div>
+      <div class="map-popup-row"><span>${label}:</span><span class="map-popup-badge" style="background:${badgeColor}">${val.toFixed(1)}%</span></div>
+      ${activeMapLayer==='imss'?`<div class="map-popup-row"><span>IMSS Score:</span><strong>${f.score}%</strong></div>`:''}
+    `, {maxWidth:220});
+
+    circle.addTo(gisMap);
+    gisMarkers.push(circle);
+  });
+
+  renderLgaLegend();
+}
+
+function renderLgaLegend(){
+  const el = document.getElementById('gis-lga-legend');
+  if(!el) return;
+  el.innerHTML = LGA_DATA.map(l=>{
+    const col = getMarkerColor(l.mean);
+    const pct = Math.round(l.mean);
+    return `<div class="gis-lga-card">
+      <div class="lga-name">${l.lga} <span style="font-weight:400;color:var(--dgray)">(n=${l.n})</span></div>
+      <div class="map-popup-row"><span>Mean IMSS:</span><strong style="color:${col}">${l.mean}%</strong></div>
+      <div class="gis-lga-bar"><div class="gis-lga-fill" style="width:${pct}%;background:${col};"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function initGisMap(){
+  if(gisMap){ updateGisMarkers(); return; }
+  gisMap = L.map('gis-map').setView([10.8, 10.4], 8);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'&copy; OpenStreetMap contributors',
+    maxZoom:18
+  }).addTo(gisMap);
+
+  // LGA boundary labels
+  Object.entries(LGA_COORDS).forEach(([name, coords])=>{
+    const lgaData = LGA_DATA.find(l=>l.lga===name);
+    if(!lgaData) return;
+    const col = getMarkerColor(lgaData.mean);
+    L.marker(coords, {
+      icon: L.divIcon({
+        className:'',
+        html:`<div style="font-size:10px;font-weight:700;color:${col};background:rgba(255,255,255,0.85);border:1px solid ${col};border-radius:4px;padding:1px 5px;white-space:nowrap;font-family:'DM Sans',sans-serif;">${name}</div>`,
+        iconAnchor:[20,10]
+      })
+    }).addTo(gisMap);
+  });
+
+  updateGisMarkers();
+}
+
+
 function refreshAll(){
   updateGinfo();
   const activeTab=document.querySelector('.tab-panel.active')?.id?.replace('tab-','');
@@ -2308,7 +2493,8 @@ const INIT_MAP={
   referral:()=>{renderReferralCharts();updatePhcReferralChart();},
   mortality:()=>{updateMortCharts();updatePeriChart();updateQIChart();},
   power:()=>{updatePowerSecChart();updatePowerPhcChart();renderPowerLGA();},
-  tables:()=>{buildSecTable();buildPhcTable();}
+  tables:()=>{buildSecTable();buildPhcTable();},
+  gismap:()=>{initGisMap();}
 };
 const inited=new Set();
 
