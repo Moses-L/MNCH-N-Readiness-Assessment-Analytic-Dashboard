@@ -6,8 +6,8 @@
 <title>Bauchi State MNCH+N Readiness Assessment Dashboard</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#0B1F3A;--blue:#1A5FA8;--sky:#2E86C1;--teal:#0E7C7B;--green:#1A8754;--amber:#D4820A;--red:#C0392B;--purple:#6C3483;--lgray:#F4F6FA;--mgray:#DDE3ED;--dgray:#8A97AB;--text:#1C2B3A;--cr:12px;--sh:0 2px 16px rgba(11,31,58,0.10);--shl:0 8px 32px rgba(11,31,58,0.18);}
@@ -107,15 +107,27 @@ body{font-family:'DM Sans',sans-serif;background:#EEF1F7;color:var(--text);min-h
 .tbl-wrap{overflow:auto;max-height:420px;}
 @media(max-width:900px){.g2,.g3,.g4,.g5,.g6{grid-template-columns:1fr 1fr;}.g4,.g5,.g6{grid-template-columns:1fr 1fr;}.sp2,.sp3{grid-column:span 1;}}
 @media(max-width:600px){.g2,.g3,.g4,.g5,.g6{grid-template-columns:1fr;}.main{padding:12px 12px 30px;}}
-.leaflet-popup-content-wrapper{border-radius:10px;box-shadow:0 4px 20px rgba(11,31,58,.18);font-family:'DM Sans',sans-serif;}
-.leaflet-popup-content{margin:10px 14px;font-size:13px;}
-.map-popup-title{font-weight:600;color:var(--navy);margin-bottom:4px;font-size:13.5px;}
-.map-popup-row{display:flex;justify-content:space-between;gap:16px;font-size:12px;color:#444;padding:2px 0;}
-.map-popup-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;color:#fff;}
-.gis-lga-card{background:#f7f9fc;border:1px solid var(--mgray);border-radius:8px;padding:10px 14px;font-size:12px;}
-.gis-lga-card .lga-name{font-weight:600;color:var(--navy);font-size:13px;margin-bottom:4px;}
-.gis-lga-bar{height:6px;border-radius:3px;margin-top:4px;background:var(--mgray);}
-.gis-lga-fill{height:6px;border-radius:3px;}
+/* ── GIS MAP STYLES (from Before) ── */
+.kpi.bl::before{background:var(--blue);}.kpi.gn::before{background:var(--green);}.kpi.am::before{background:var(--amber);}.kpi.rd::before{background:var(--red);}
+.kpi.bl .kpi-val{color:var(--blue);}.kpi.gn .kpi-val{color:var(--green);}.kpi.am .kpi-val{color:var(--amber);}.kpi.rd .kpi-val{color:var(--red);}
+.kpi .klabel{font-size:10px;font-weight:700;color:var(--dgray);letter-spacing:.6px;text-transform:uppercase;margin-bottom:5px;}
+.kpi .kval{font-family:'DM Mono',monospace;font-size:26px;font-weight:500;line-height:1;}
+.kpi .ksub{font-size:10.5px;color:var(--dgray);margin-top:4px;}
+.stitle{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.stitle h2{font-size:17px;font-weight:700;color:var(--navy);}
+.stag{font-size:10.5px;background:var(--navy);color:#fff;padding:3px 10px;border-radius:4px;font-weight:600;letter-spacing:.5px;}
+.ctitle{font-size:11px;font-weight:700;color:var(--dgray);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--sky);display:inline-block;flex-shrink:0;}
+.cw{position:relative;width:100%;}.cw.sh{height:180px;}
+#map{height:520px;border-radius:10px;border:1px solid var(--mgray);}
+.leg-row{display:flex;align-items:center;gap:7px;margin-bottom:5px;font-size:11.5px;}
+.leg-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:2px solid rgba(0,0,0,0.2);}
+.leg-sq{width:14px;height:14px;border-radius:3px;flex-shrink:0;border:2px solid rgba(0,0,0,0.2);}
+.ritem{display:flex;align-items:center;gap:7px;margin-bottom:6px;font-size:11px;}
+.rname{width:155px;flex-shrink:0;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rbg{flex:1;height:13px;background:var(--lgray);border-radius:7px;overflow:hidden;}
+.rbf{height:100%;border-radius:7px;}
+.rval{width:36px;text-align:right;font-family:'DM Mono',monospace;font-size:10.5px;font-weight:500;}
 </style>
 </head>
 <body>
@@ -138,7 +150,7 @@ body{font-family:'DM Sans',sans-serif;background:#EEF1F7;color:var(--text);min-h
   </div>
   <nav class="nav">
     <button class="nav-btn active" onclick="switchTab('overview',this)">📊 Overview</button>
-    <button class="nav-btn" onclick="switchTab('gismap',this)">🗺️ GIS Map</button>
+    <button class="nav-btn" onclick="switchTab('map',this)">&#127758; GIS Map</button>
     <button class="nav-btn" onclick="switchTab('staff',this)">👥 Staff &amp; HRH</button>
     <button class="nav-btn" onclick="switchTab('mnch',this)">🤱 MNCH Services</button>
     <button class="nav-btn" onclick="switchTab('nutrition',this)">🥦 Nutrition</button>
@@ -294,6 +306,66 @@ body{font-family:'DM Sans',sans-serif;background:#EEF1F7;color:var(--text);min-h
         </select>
       </div>
       <div class="cw cw-240"><canvas id="radarChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ TAB: GIS MAP -->
+<!-- ═══ TAB: GIS MAP ═══ -->
+<div class="tab-panel" id="tab-map">
+  <div class="stitle"><h2>GIS Facility Map &mdash; Bauchi State</h2><span class="stag">GEOSPATIAL</span></div>
+  <div class="g4" style="margin-bottom:14px">
+    <div class="kpi bl"><div class="klabel">Total Mapped</div><div class="kval">105</div><div class="ksub">89 PHC + 16 Secondary (GPS)</div></div>
+    <div class="kpi gn"><div class="klabel">LGAs Covered</div><div class="kval">16</div><div class="ksub">Full state coverage</div></div>
+    <div class="kpi am"><div class="klabel">Map Filter</div><div class="kval" style="font-size:16px;padding-top:4px">Interactive</div><div class="ksub">Click markers for details</div></div>
+    <div class="kpi rd"><div class="klabel">Critical Facilities</div><div class="kval">12</div><div class="ksub">PHC score &lt;60% (red markers)</div></div>
+  </div>
+  <div class="g3" style="margin-bottom:14px;align-items:start">
+    <div class="card sp2" style="padding:10px;position:relative">
+      <div id="map"></div>
+    </div>
+    <div>
+      <div class="card" style="padding:14px;margin-bottom:14px">
+        <div class="ctitle"><span class="dot"></span>Map Layer Controls</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="chkSec" checked onchange="toggleLayer('sec')"> <span class="leg-sq" style="background:#1A5FA8;border-color:#0B3A6E"></span> Secondary Hospitals (16)</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="chkPhcG" checked onchange="toggleLayer('phcG')"> <span class="leg-dot" style="background:#1A8754;border-color:#0D5C3A"></span> PHC &ge;80% Adequate (20)</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="chkPhcA" checked onchange="toggleLayer('phcA')"> <span class="leg-dot" style="background:#D4820A;border-color:#8A5300"></span> PHC 60&ndash;79% Partial (58)</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="chkPhcR" checked onchange="toggleLayer('phcR')"> <span class="leg-dot" style="background:#C0392B;border-color:#7B2019"></span> PHC &lt;60% Critical (12)</label>
+        </div>
+        <hr style="margin:10px 0;border-color:var(--mgray)">
+        <div class="ctitle" style="margin-bottom:8px"><span class="dot" style="background:var(--amber)"></span>Filter by LGA</div>
+        <select id="mapLgaFilter" onchange="filterMapLGA()" style="width:100%;border:1px solid var(--mgray);border-radius:6px;padding:6px 9px;font-size:12px;font-family:'DM Sans',sans-serif">
+          <option value="all">All LGAs (106 facilities)</option>
+          <option>Alkaleri</option><option>Bauchi</option><option>Dambam</option><option>Darazo</option>
+          <option>Dass</option><option>Gamawa</option><option>Ganjuwa</option><option>Giade</option>
+          <option>Itas/Gadau</option><option>Jama'are</option><option>Katagum</option><option>Kirfi</option>
+          <option>Misau</option><option>Ningi</option><option>Shira</option><option>Toro</option>
+        </select>
+      </div>
+      <div class="card" style="padding:14px">
+        <div class="ctitle"><span class="dot"></span>Legend</div>
+        <div class="leg-row"><div class="leg-sq" style="background:#1A5FA8"></div><span>Secondary Hospital</span></div>
+        <div class="leg-row"><div class="leg-dot" style="background:#1A8754"></div><span>&ge;80% Adequate</span></div>
+        <div class="leg-row"><div class="leg-dot" style="background:#D4820A"></div><span>60&ndash;79% Partial</span></div>
+        <div class="leg-row"><div class="leg-dot" style="background:#C0392B"></div><span>&lt;60% Critical</span></div>
+        <hr style="margin:8px 0;border-color:var(--mgray)">
+        <div style="font-size:10.5px;color:var(--dgray);line-height:1.5">Marker size reflects relative IMSS score. Click any marker to view facility details including readiness score, staffing, and key indicators.</div>
+      </div>
+    </div>
+  </div>
+  <div class="g3">
+    <div class="card">
+      <div class="ctitle"><span class="dot"></span>Top 10 Highest-Scoring PHC Facilities</div>
+      <div style="margin-top:4px" id="topPhcList"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle"><span class="dot" style="background:var(--red)"></span>Bottom 10 Critical PHC Facilities</div>
+      <div style="margin-top:4px" id="botPhcList"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle"><span class="dot" style="background:var(--blue)"></span>Secondary Facilities by Ambulance Status</div>
+      <div class="cw sh"><canvas id="ambMapChart"></canvas></div>
     </div>
   </div>
 </div>
@@ -1165,35 +1237,6 @@ body{font-family:'DM Sans',sans-serif;background:#EEF1F7;color:var(--text);min-h
     </div>
     <div id="table-phc" style="display:none">
       <div class="tbl-wrap"><table class="htbl" id="phcTable"></table></div>
-    </div>
-  </div>
-</div>
-
-<!-- GIS MAP TAB -->
-<div class="tab-panel" id="tab-gismap">
-  <div class="main">
-    <div style="margin-bottom:16px;">
-      <div class="card" style="padding:18px 22px;">
-        <div class="card-title"><div class="card-title-left"><span class="dot"></span>GIS Facility Map — Bauchi State MNCH+N</div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:2px;">
-            <button class="chip active" onclick="setMapLayer('imss',this)" id="mapLayerBtn_imss">IMSS Score</button>
-            <button class="chip" onclick="setMapLayer('staff',this)" id="mapLayerBtn_staff">Staff Readiness</button>
-            <button class="chip" onclick="setMapLayer('drugs',this)" id="mapLayerBtn_drugs">Drug Availability</button>
-            <button class="chip" onclick="setMapLayer('equip',this)" id="mapLayerBtn_equip">Equipment</button>
-          </div>
-        </div>
-        <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
-          <span style="font-size:12px;color:var(--dgray);">Circle size = facility score &nbsp;|&nbsp; Colour = performance tier</span>
-          <span style="display:flex;gap:8px;align-items:center;font-size:11.5px;">
-            <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#1A8754;"></span> High (≥80%)
-            <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#D4820A;margin-left:6px;"></span> Medium (60–79%)
-            <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#C0392B;margin-left:6px;"></span> Low (<60%)
-            <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#1A5FA8;margin-left:6px;border:2px solid #fff;"></span> Secondary
-          </span>
-        </div>
-        <div id="gis-map" style="height:560px;width:100%;border-radius:10px;border:1px solid var(--mgray);z-index:1;"></div>
-        <div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;" id="gis-lga-legend"></div>
-      </div>
     </div>
   </div>
 </div>
@@ -2328,152 +2371,8 @@ function filterTables(){
 }
 
 // ═══════════════════════════════════════════════
-//  GIS MAP
+//  REFRESH ALL
 // ═══════════════════════════════════════════════
-// LGA centroid coordinates (Bauchi State, Nigeria)
-const LGA_COORDS = {
-  'Alkaleri':  [10.35, 10.92], 'Bauchi':    [10.31, 9.84],
-  'Dambam':    [11.75, 11.72], 'Darazo':    [10.47, 10.43],
-  'Dass':      [10.07, 10.10], 'Gamawa':    [12.09, 11.12],
-  'Ganjuwa':   [10.49, 9.68],  'Giade':     [11.51, 10.68],
-  'Itas/Gadau':[11.75, 10.73],"Jama'are":  [11.68, 10.27],
-  'Katagum':   [11.28, 11.05], 'Kirfi':     [10.18, 10.73],
-  'Misau':     [11.21, 10.27], 'Ningi':     [10.93, 9.60],
-  'Shira':     [12.04, 10.37], 'Toro':      [10.46, 9.07]
-};
-
-let gisMap = null;
-let gisMarkers = [];
-let activeMapLayer = 'imss';
-
-function getMarkerColor(val, hi=80, lo=60){
-  if(val >= hi) return '#1A8754';
-  if(val >= lo) return '#D4820A';
-  return '#C0392B';
-}
-
-function getLayerValue(f, layer){
-  if(layer === 'imss') return f.score;
-  if(layer === 'staff'){
-    const skilled = (f.skilled !== undefined) ? f.skilled : 0;
-    return Math.min(100, skilled * 10);
-  }
-  if(layer === 'drugs') return f.drug_pct !== undefined ? f.drug_pct : 0;
-  if(layer === 'equip') return f.equip_pct !== undefined ? f.equip_pct : 0;
-  return f.score;
-}
-
-function getLayerLabel(layer){
-  if(layer==='imss') return 'IMSS Score';
-  if(layer==='staff') return 'Staff Index';
-  if(layer==='drugs') return 'Drug Availability';
-  if(layer==='equip') return 'Equipment Score';
-  return 'Score';
-}
-
-function setMapLayer(layer, btn){
-  activeMapLayer = layer;
-  document.querySelectorAll('#tab-gismap .chip').forEach(b=>b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  updateGisMarkers();
-}
-
-function updateGisMarkers(){
-  if(!gisMap) return;
-  gisMarkers.forEach(m=>gisMap.removeLayer(m));
-  gisMarkers = [];
-
-  // Build combined facility list with LGA coordinates (jitter to separate)
-  const allFacs = [];
-  // PHC data
-  PHC.forEach(f=>{
-    const coords = LGA_COORDS[f.lga];
-    if(coords){
-      const jLat = coords[0] + (Math.random()-0.5)*0.18;
-      const jLng = coords[1] + (Math.random()-0.5)*0.18;
-      allFacs.push({...f, lat:jLat, lng:jLng, type:'PHC'});
-    }
-  });
-  // SEC data
-  SEC.forEach(f=>{
-    const coords = LGA_COORDS[f.lga];
-    if(coords){
-      const jLat = coords[0] + (Math.random()-0.5)*0.12;
-      const jLng = coords[1] + (Math.random()-0.5)*0.12;
-      allFacs.push({...f, lat:jLat, lng:jLng, type:'Secondary'});
-    }
-  });
-
-  const label = getLayerLabel(activeMapLayer);
-  allFacs.forEach(f=>{
-    const val = getLayerValue(f, activeMapLayer);
-    const color = f.type === 'Secondary' ? '#1A5FA8' : getMarkerColor(val);
-    const radius = f.type === 'Secondary' ? 10 + val*0.08 : 6 + val*0.06;
-    const circle = L.circleMarker([f.lat, f.lng], {
-      radius: Math.max(5, radius),
-      fillColor: color,
-      color: '#fff',
-      weight: 1.5,
-      opacity: 1,
-      fillOpacity: 0.82
-    });
-
-    const badgeColor = getMarkerColor(val);
-    circle.bindPopup(`
-      <div class="map-popup-title">${f.fac}</div>
-      <div class="map-popup-row"><span>LGA:</span><strong>${f.lga}</strong></div>
-      <div class="map-popup-row"><span>Type:</span><span class="map-popup-badge" style="background:${color}">${f.type}</span></div>
-      <div class="map-popup-row"><span>${label}:</span><span class="map-popup-badge" style="background:${badgeColor}">${val.toFixed(1)}%</span></div>
-      ${activeMapLayer==='imss'?`<div class="map-popup-row"><span>IMSS Score:</span><strong>${f.score}%</strong></div>`:''}
-    `, {maxWidth:220});
-
-    circle.addTo(gisMap);
-    gisMarkers.push(circle);
-  });
-
-  renderLgaLegend();
-}
-
-function renderLgaLegend(){
-  const el = document.getElementById('gis-lga-legend');
-  if(!el) return;
-  el.innerHTML = LGA_DATA.map(l=>{
-    const col = getMarkerColor(l.mean);
-    const pct = Math.round(l.mean);
-    return `<div class="gis-lga-card">
-      <div class="lga-name">${l.lga} <span style="font-weight:400;color:var(--dgray)">(n=${l.n})</span></div>
-      <div class="map-popup-row"><span>Mean IMSS:</span><strong style="color:${col}">${l.mean}%</strong></div>
-      <div class="gis-lga-bar"><div class="gis-lga-fill" style="width:${pct}%;background:${col};"></div></div>
-    </div>`;
-  }).join('');
-}
-
-function initGisMap(){
-  if(gisMap){ updateGisMarkers(); return; }
-  gisMap = L.map('gis-map').setView([10.8, 10.4], 8);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-    attribution:'&copy; OpenStreetMap contributors',
-    maxZoom:18
-  }).addTo(gisMap);
-
-  // LGA boundary labels
-  Object.entries(LGA_COORDS).forEach(([name, coords])=>{
-    const lgaData = LGA_DATA.find(l=>l.lga===name);
-    if(!lgaData) return;
-    const col = getMarkerColor(lgaData.mean);
-    L.marker(coords, {
-      icon: L.divIcon({
-        className:'',
-        html:`<div style="font-size:10px;font-weight:700;color:${col};background:rgba(255,255,255,0.85);border:1px solid ${col};border-radius:4px;padding:1px 5px;white-space:nowrap;font-family:'DM Sans',sans-serif;">${name}</div>`,
-        iconAnchor:[20,10]
-      })
-    }).addTo(gisMap);
-  });
-
-  updateGisMarkers();
-}
-
-
 function refreshAll(){
   updateGinfo();
   const activeTab=document.querySelector('.tab-panel.active')?.id?.replace('tab-','');
@@ -2481,10 +2380,105 @@ function refreshAll(){
 }
 
 // ═══════════════════════════════════════════════
+//  GIS MAP DATA (exact from Before.html)
+// ═══════════════════════════════════════════════
+const PHC_DATA = [{"fac": "Kofar Dumi Primary Health Care Centre", "lga": "Bauchi", "phc_type": "Primary Health Center", "score": 88.7, "skilled": 19, "sbas": 4, "lat": 10.301709, "lng": 9.850338, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Miri Primary Health Care Center", "lga": "Bauchi", "phc_type": "Primary Health Center", "score": 68.6, "skilled": 32, "sbas": 13, "lat": 10.305644, "lng": 9.743649, "cho": 2, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Tashan Babiye Primary Health Care Centre", "lga": "Bauchi", "phc_type": "Primary Health Center", "score": 76.8, "skilled": 26, "sbas": 11, "lat": 10.309101, "lng": 9.846501, "cho": 2, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Inkil Primary Health Centre", "lga": "Bauchi", "phc_type": "Primary Health Center", "score": 48.6, "skilled": 8, "sbas": 6, "lat": 10.301997, "lng": 9.893338, "cho": 2, "nurses": 2, "nutri_screening": 1, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Alkaleri Town Maternal & Child Health Clinic", "lga": "Alkaleri", "phc_type": "Primary Health Center", "score": 70.6, "skilled": 17, "sbas": 7, "lat": 10.268024, "lng": 10.329968, "cho": 2, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Gwaram Primary Health Care Center", "lga": "Alkaleri", "phc_type": "Primary Health Center", "score": 69.2, "skilled": 3, "sbas": 3, "lat": 10.241297, "lng": 10.289636, "cho": 2, "nurses": 2, "nutri_screening": 1, "rutf": 0, "transport": "Tricycle Ambulance"}, {"fac": "Madakiri Primary Health Centre", "lga": "Misau", "phc_type": "Primary Health Center", "score": 62.7, "skilled": 11, "sbas": 7, "lat": 11.323147, "lng": 10.317285, "cho": 0, "nurses": 2, "nutri_screening": 1, "rutf": 0, "transport": "Tricycle Ambulance"}, {"fac": "Kofar Fada Primary Health Center", "lga": "Katagum", "phc_type": "Primary Health Center", "score": 67.8, "skilled": 7, "sbas": 7, "lat": 11.677687, "lng": 10.193682, "cho": 2, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Kafin Sule Primary Health Center", "lga": "Misau", "phc_type": "Primary Health Center", "score": 52.8, "skilled": 6, "sbas": 1, "lat": 0.0, "lng": 0.0, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Tricycle Ambulance"}, {"fac": "Ningi Town Health Center", "lga": "Ningi", "phc_type": "Primary Health Center", "score": 79.1, "skilled": 24, "sbas": 7, "lat": 11.079698, "lng": 9.569372, "cho": 0, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Makara Huta Primary Health Center", "lga": "Katagum", "phc_type": "Primary Health Center", "score": 74.0, "skilled": 7, "sbas": 4, "lat": 11.689162, "lng": 10.191785, "cho": 0, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Tricycle Ambulance"}, {"fac": "Model Primary Health Centre Nasaru", "lga": "Ningi", "phc_type": "Primary Health Center", "score": 78.0, "skilled": 19, "sbas": 5, "lat": 11.071483, "lng": 9.580475, "cho": 2, "nurses": 2, "nutri_screening": 2, "rutf": 2, "transport": "Private Vehicle Arrangement"}, {"fac": "Dunkurmi PHC", "lga": "Misau", "phc_type": "Primary Health Center", "score": 63.3, "skilled": 4, "sbas": 1, "lat": 11.474231, "lng": 10.330653, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Tricycle Ambulance"}, {"fac": "Gar Primary Health Care Center", "lga": "Alkaleri", "phc_type": "Primary Health Center", "score": 65.8, "skilled": 5, "sbas": 3, "lat": 10.072627, "lng": 10.26746, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Ambulance"}, {"fac": "Melendige Primary Health Center", "lga": "Itas/Gadau", "phc_type": "Primary Health Center", "score": 81.1, "skilled": 4, "sbas": 2, "lat": 11.956127, "lng": 10.212965, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Zabi Model Primary Health Centre", "lga": "Giade", "phc_type": "Primary Health Center", "score": 72.0, "skilled": 8, "sbas": 2, "lat": 11.498259, "lng": 10.296694, "cho": 2, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Shira Primary Health Care Center", "lga": "Alkaleri", "phc_type": "Primary Health Center", "score": 71.2, "skilled": 6, "sbas": 4, "lat": 10.054207, "lng": 10.282712, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Luchambi Primary Health Centre", "lga": "Dambam", "phc_type": "Primary Health Center", "score": 66.4, "skilled": 2, "sbas": 2, "lat": 11.756298, "lng": 10.83026, "cho": 0, "nurses": 0, "nutri_screening": 1, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Zirami Primary Health Centre", "lga": "Giade", "phc_type": "Primary Health Center", "score": 57.3, "skilled": 2, "sbas": 1, "lat": 11.562993, "lng": 10.353313, "cho": 2, "nurses": 0, "nutri_screening": 1, "rutf": 0, "transport": "Tricycle Ambulance"}, {"fac": "Zaura Primary Health Center", "lga": "Dambam", "phc_type": "Primary Health Center", "score": 68.1, "skilled": 5, "sbas": 1, "lat": 11.756563, "lng": 10.91147, "cho": 0, "nurses": 2, "nutri_screening": 1, "rutf": 0, "transport": "Ambulance"}, {"fac": "Bambal Primary Health Centre", "lga": "Itas/Gadau", "phc_type": "Primary Health Center", "score": 56.8, "skilled": 4, "sbas": 1, "lat": 11.747043, "lng": 9.738743, "cho": 0, "nurses": 0, "nutri_screening": 0, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Yanda Primary Health Center", "lga": "Dambam", "phc_type": "Primary Health Center", "score": 69.5, "skilled": 4, "sbas": 1, "lat": 11.509673, "lng": 10.763645, "cho": 0, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Ari Health Centre", "lga": "Ningi", "phc_type": "Primary Health Center", "score": 70.9, "skilled": 10, "sbas": 6, "lat": 11.015767, "lng": 9.519522, "cho": 0, "nurses": 0, "nutri_screening": 1, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Faguji Health Clinic", "lga": "Giade", "phc_type": "Primary Health Center", "score": 46.0, "skilled": 2, "sbas": 1, "lat": 11.515181, "lng": 10.260826, "cho": 2, "nurses": 0, "nutri_screening": 1, "rutf": 0, "transport": "Tricycle Ambulance"}, {"fac": "Ningi East Primary Health Center", "lga": "Ningi", "phc_type": "Primary Health Center", "score": 79.4, "skilled": 16, "sbas": 3, "lat": 11.071482, "lng": 9.580475, "cho": 2, "nurses": 0, "nutri_screening": 1, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Dott Primary Health Care Centre", "lga": "Dass", "phc_type": "Primary Health Center", "score": 87.0, "skilled": 6, "sbas": 4, "lat": 10.024267, "lng": 9.517397, "cho": 2, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Dass Town Primary Health Care Center", "lga": "Dass", "phc_type": "Primary Health Center", "score": 87.6, "skilled": 12, "sbas": 7, "lat": 9.998212, "lng": 9.514339, "cho": 0, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Zumbul Maternal And Child Health Clinic", "lga": "Dass", "phc_type": "Primary Health Center", "score": 72.9, "skilled": 2, "sbas": 1, "lat": 10.048485, "lng": 9.390345, "cho": 0, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Ambulance"}, {"fac": "Durr Model Primary Health Care Centre", "lga": "Dass", "phc_type": "Primary Health Center", "score": 80.2, "skilled": 5, "sbas": 3, "lat": 9.975103, "lng": 9.40759, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Ambulance"}, {"fac": "Dabardak Primary Health Care Center", "lga": "Dass", "phc_type": "Primary Health Center", "score": 83.9, "skilled": 5, "sbas": 2, "lat": 10.013763, "lng": 9.55634, "cho": 0, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Luda Primary Health Care Center", "lga": "Bauchi", "phc_type": "Primary Health Center", "score": 83.9, "skilled": 7, "sbas": 1, "lat": 10.04488, "lng": 9.87153, "cho": 0, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Liman Katagum Primary Health Care Centre", "lga": "Bauchi", "phc_type": "Primary Health Center", "score": 90.4, "skilled": 8, "sbas": 4, "lat": 10.020095, "lng": 9.765863, "cho": 2, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Ambulance"}, {"fac": "Sabon-Sara Primary Health Centre", "lga": "Giade", "phc_type": "Primary Health Center", "score": 50.6, "skilled": 3, "sbas": 0, "lat": 11.432404, "lng": 10.30223, "cho": 0, "nurses": 0, "nutri_screening": 1, "rutf": 0, "transport": "Ambulance"}, {"fac": "Matsango Primary Health center", "lga": "Katagum", "phc_type": "Primary Health Center", "score": 81.6, "skilled": 5, "sbas": 5, "lat": 11.659031, "lng": 10.195536, "cho": 0, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Sebore Primary Health Centre", "lga": "Misau", "phc_type": "Primary Health Center", "score": 74.6, "skilled": 8, "sbas": 3, "lat": 11.410647, "lng": 10.457318, "cho": 0, "nurses": 2, "nutri_screening": 1, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Kangere Primary Health Care Centre", "lga": "Bauchi", "phc_type": "Primary Health Center", "score": 79.9, "skilled": 16, "sbas": 3, "lat": 10.261558, "lng": 9.996293, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Bidir Primary Health Clinic", "lga": "Katagum", "phc_type": "Primary Health Center", "score": 81.4, "skilled": 6, "sbas": 3, "lat": 11.624887, "lng": 10.200695, "cho": 0, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Kafin Madaki Primary Health Centre", "lga": "Ganjuwa", "phc_type": "Primary Health Center", "score": 82.8, "skilled": 10, "sbas": 7, "lat": 10.687135, "lng": 9.756392, "cho": 2, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Gadarmaiwa Health Centre", "lga": "Ningi", "phc_type": "Primary Health Center", "score": 72.9, "skilled": 12, "sbas": 5, "lat": 10.934377, "lng": 9.599865, "cho": 0, "nurses": 2, "nutri_screening": 2, "rutf": 2, "transport": "Private Vehicle Arrangement"}, {"fac": "Sirko Primary Health Clinic", "lga": "Misau", "phc_type": "Primary Health Center", "score": 76.0, "skilled": 4, "sbas": 1, "lat": 11.361555, "lng": 10.464737, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 2, "transport": "Private Vehicle Arrangement"}, {"fac": "Misau North Primary Health Center", "lga": "Misau", "phc_type": "Primary Health Center", "score": 62.4, "skilled": 10, "sbas": 4, "lat": 11.320222, "lng": 10.464957, "cho": 0, "nurses": 2, "nutri_screening": 1, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Tashar Maje Health Clinic", "lga": "Ningi", "phc_type": "Primary Health Center", "score": 71.2, "skilled": 9, "sbas": 4, "lat": 10.988009, "lng": 9.570999, "cho": 2, "nurses": 0, "nutri_screening": 1, "rutf": 2, "transport": "Private Vehicle Arrangement"}, {"fac": "Uzum Primary Health Centre", "lga": "Giade", "phc_type": "Primary Health Center", "score": 58.2, "skilled": 2, "sbas": 1, "lat": 11.519272, "lng": 10.205824, "cho": 2, "nurses": 0, "nutri_screening": 1, "rutf": 0, "transport": "Ambulance"}, {"fac": "Nabardo Primary Health Care Centre", "lga": "Toro", "phc_type": "Primary Health Center", "score": 80.8, "skilled": 20, "sbas": 7, "lat": 10.222487, "lng": 9.398138, "cho": 2, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Shongo Primary Health Centre", "lga": "Kirfi", "phc_type": "Primary Health Center", "score": 66.1, "skilled": 4, "sbas": 2, "lat": 10.266014, "lng": 10.594849, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "PHCC Jugudu", "lga": "Giade", "phc_type": "Primary Health Center", "score": 68.6, "skilled": 4, "sbas": 2, "lat": 11.355629, "lng": 10.204028, "cho": 0, "nurses": 2, "nutri_screening": 1, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Lariski Primary Health Centre", "lga": "Kirfi", "phc_type": "Comprehensive Health Center", "score": 76.8, "skilled": 18, "sbas": 2, "lat": 10.311297, "lng": 10.678618, "cho": 2, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Yana Primary Health Center", "lga": "Shira", "phc_type": "Primary Health Center", "score": 72.6, "skilled": 4, "sbas": 2, "lat": 11.406187, "lng": 10.016272, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Miya Primary Health Centre", "lga": "Ganjuwa", "phc_type": "Primary Health Center", "score": 75.4, "skilled": 15, "sbas": 3, "lat": 10.906128, "lng": 9.831458, "cho": 2, "nurses": 2, "nutri_screening": 1, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Garin Jarmai Primary Health Centre", "lga": "Dambam", "phc_type": "Primary Health Center", "score": 62.1, "skilled": 3, "sbas": 1, "lat": 11.453757, "lng": 10.897952, "cho": 0, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Garuza Primary Health Centre", "lga": "Dambam", "phc_type": "Primary Health Center", "score": 74.3, "skilled": 5, "sbas": 1, "lat": 11.626893, "lng": 10.718597, "cho": 0, "nurses": 0, "nutri_screening": 1, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Tumfafi Primary Health Center", "lga": "Shira", "phc_type": "Primary Health Center", "score": 66.9, "skilled": 5, "sbas": 2, "lat": 11.443709, "lng": 10.164432, "cho": 0, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Tsafi Primary Health Center", "lga": "Shira", "phc_type": "Primary Health Center", "score": 59.3, "skilled": 4, "sbas": 2, "lat": 11.364241, "lng": 10.100022, "cho": 0, "nurses": 2, "nutri_screening": 1, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Jama'are Town Primary Health Center", "lga": "Jama'are", "phc_type": "Primary Health Center", "score": 76.8, "skilled": 5, "sbas": 4, "lat": 11.666532, "lng": 9.926742, "cho": 0, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Wanka Primary Health Centre", "lga": "Kirfi", "phc_type": "Primary Health Center", "score": 73.2, "skilled": 7, "sbas": 2, "lat": 10.450747, "lng": 10.431599, "cho": 0, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Gololo Primary Health Centre", "lga": "Gamawa", "phc_type": "Primary Health Center", "score": 76.8, "skilled": 6, "sbas": 3, "lat": 12.317338, "lng": 10.693056, "cho": 0, "nurses": 2, "nutri_screening": 1, "rutf": 0, "transport": "Ambulance"}, {"fac": "Under Five Primary Health Centre", "lga": "Jama'are", "phc_type": "Primary Health Center", "score": 75.7, "skilled": 3, "sbas": 2, "lat": 11.667516, "lng": 9.932457, "cho": 0, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Tilden Fulani Primary Health Clinic", "lga": "Toro", "phc_type": "Primary Health Center", "score": 89.8, "skilled": 37, "sbas": 13, "lat": 10.040142, "lng": 8.986405, "cho": 2, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Bangire Primary Health Centre", "lga": "Shira", "phc_type": "Primary Health Center", "score": 59.0, "skilled": 4, "sbas": 3, "lat": 11.319735, "lng": 10.042705, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Soro Primary Health Care Centre", "lga": "Ganjuwa", "phc_type": "Primary Health Center", "score": 82.2, "skilled": 8, "sbas": 4, "lat": 10.76793, "lng": 10.287269, "cho": 2, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Shira Primary Health Center (Shira)", "lga": "Shira", "phc_type": "Primary Health Center", "score": 65.5, "skilled": 4, "sbas": 3, "lat": 11.460767, "lng": 10.045988, "cho": 2, "nurses": 0, "nutri_screening": 1, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Tumbi Primary Health Centre", "lga": "Gamawa", "phc_type": "Primary Health Center", "score": 66.9, "skilled": 6, "sbas": 2, "lat": 12.254633, "lng": 10.582185, "cho": 2, "nurses": 0, "nutri_screening": 1, "rutf": 0, "transport": "Ambulance"}, {"fac": "Gadiya Primary Health Centre", "lga": "Gamawa", "phc_type": "Primary Health Center", "score": 71.5, "skilled": 4, "sbas": 1, "lat": 11.940591, "lng": 10.633557, "cho": 0, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Ambulance"}, {"fac": "Hanafari Model Primary Health Centre", "lga": "Jama'are", "phc_type": "Primary Health Center", "score": 83.3, "skilled": 3, "sbas": 1, "lat": 11.600732, "lng": 9.88761, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Ambulance"}, {"fac": "Rishi Primary Health Centre", "lga": "Toro", "phc_type": "Primary Health Center", "score": 63.6, "skilled": 14, "sbas": 3, "lat": 10.476725, "lng": 8.937471, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Ambulance"}, {"fac": "Darazo Primary Health Clinic", "lga": "Darazo", "phc_type": "Primary Health Center", "score": 50.6, "skilled": 12, "sbas": 4, "lat": 10.990991, "lng": 10.425467, "cho": 0, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Andubun Primary Health Centre", "lga": "Shira", "phc_type": "Primary Health Center", "score": 55.1, "skilled": 4, "sbas": 3, "lat": 11.513198, "lng": 9.822385, "cho": 2, "nurses": 0, "nutri_screening": 1, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Katabarwa Primary Health Center", "lga": "Shira", "phc_type": "Primary Health Center", "score": 66.9, "skilled": 2, "sbas": 1, "lat": 11.582385, "lng": 9.919465, "cho": 2, "nurses": 0, "nutri_screening": 1, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Guyaba Primary Health Centre", "lga": "Kirfi", "phc_type": "Primary Health Center", "score": 74.9, "skilled": 5, "sbas": 5, "lat": 10.403917, "lng": 10.355033, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Tricycle Ambulance"}, {"fac": "Shongo Primary Health Centre", "lga": "Kirfi", "phc_type": "Primary Health Center", "score": 68.9, "skilled": 2, "sbas": 1, "lat": 10.561116, "lng": 10.417286, "cho": 2, "nurses": 0, "nutri_screening": 1, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Jurara Primary Health Centre", "lga": "Jama'are", "phc_type": "Primary Health Center", "score": 81.1, "skilled": 6, "sbas": 1, "lat": 11.623365, "lng": 9.81687, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Wabu Primary Health Centre", "lga": "Gamawa", "phc_type": "Primary Health Center", "score": 78.2, "skilled": 5, "sbas": 1, "lat": 11.965226, "lng": 10.743432, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Kore Primary Health Centre", "lga": "Gamawa", "phc_type": "Primary Health Center", "score": 80.2, "skilled": 7, "sbas": 2, "lat": 12.274657, "lng": 10.36979, "cho": 0, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Nasarawa Primary Health Centre", "lga": "Jama'are", "phc_type": "Primary Health Center", "score": 73.7, "skilled": 3, "sbas": 3, "lat": 11.680042, "lng": 9.92753, "cho": 2, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Tricycle Ambulance"}, {"fac": "Tubule Primary Health Centre", "lga": "Kirfi", "phc_type": "Primary Health Center", "score": 75.4, "skilled": 3, "sbas": 1, "lat": 10.459781, "lng": 10.669392, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Ambulance"}, {"fac": "Gumau Primary Health Care Center", "lga": "Toro", "phc_type": "Health Clinic", "score": 68.1, "skilled": 14, "sbas": 5, "lat": 10.258705, "lng": 9.013852, "cho": 2, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Ambulance"}, {"fac": "Lanzai Primary Health Center", "lga": "Darazo", "phc_type": "Primary Health Center", "score": 66.1, "skilled": 5, "sbas": 2, "lat": 11.423423, "lng": 10.808712, "cho": 2, "nurses": 0, "nutri_screening": 1, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Gongo Primary Health Centre", "lga": "Jama'are", "phc_type": "Primary Health Center", "score": 78.5, "skilled": 2, "sbas": 1, "lat": 11.705808, "lng": 9.954652, "cho": 0, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Tricycle Ambulance"}, {"fac": "Kanya Primary Health Centre", "lga": "Darazo", "phc_type": "Primary Health Center", "score": 66.4, "skilled": 6, "sbas": 1, "lat": 11.068465, "lng": 10.354693, "cho": 0, "nurses": 0, "nutri_screening": 1, "rutf": 1, "transport": "Private Vehicle Arrangement"}, {"fac": "Magaman Gumau Primary Health care Centre", "lga": "Toro", "phc_type": "Primary Health Center", "score": 75.1, "skilled": 22, "sbas": 10, "lat": 10.068912, "lng": 9.126133, "cho": 0, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Wahu Primary Health Center", "lga": "Darazo", "phc_type": "Primary Health Center", "score": 86.2, "skilled": 4, "sbas": 1, "lat": 11.385762, "lng": 10.655592, "cho": 2, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Beli Health Post", "lga": "Shira", "phc_type": "Primary Health Center", "score": 63.0, "skilled": 5, "sbas": 3, "lat": 11.563832, "lng": 9.979242, "cho": 0, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Kilbori Primary Health Centre", "lga": "Shira", "phc_type": "Primary Health Center", "score": 64.4, "skilled": 2, "sbas": 1, "lat": 11.571585, "lng": 10.065488, "cho": 2, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Kafi Romi Primary Health Centre", "lga": "Gamawa", "phc_type": "Primary Health Center", "score": 66.1, "skilled": 5, "sbas": 1, "lat": 12.053948, "lng": 10.506842, "cho": 0, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Sabon Kafi Primary Health Centre", "lga": "Jama'are", "phc_type": "Primary Health Center", "score": 83.1, "skilled": 3, "sbas": 2, "lat": 11.674932, "lng": 9.923983, "cho": 0, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Kari Primary Health Centre", "lga": "Darazo", "phc_type": "Health Clinic", "score": 50.0, "skilled": 4, "sbas": 2, "lat": 11.243243, "lng": 10.563084, "cho": 0, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Alagano Primary Health Centre", "lga": "Gamawa", "phc_type": "Primary Health Center", "score": 70.3, "skilled": 6, "sbas": 2, "lat": 12.316605, "lng": 10.693761, "cho": 0, "nurses": 2, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Abuja Primary Health Center", "lga": "Jama'are", "phc_type": "Primary Health Center", "score": 85.9, "skilled": 4, "sbas": 2, "lat": 11.673322, "lng": 9.919573, "cho": 0, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Lago Health Clinic", "lga": "Darazo", "phc_type": "Primary Health Center", "score": 79.9, "skilled": 4, "sbas": 1, "lat": 11.181862, "lng": 10.489175, "cho": 0, "nurses": 0, "nutri_screening": 2, "rutf": 0, "transport": "Private Vehicle Arrangement"}, {"fac": "Zubo Primary Health Centre", "lga": "Shira", "phc_type": "Primary Health Center", "score": 71.2, "skilled": 3, "sbas": 2, "lat": 11.672823, "lng": 9.93411, "cho": 2, "nurses": 2, "nutri_screening": 1, "rutf": 0, "transport": "Private Vehicle Arrangement"}];
+const SEC_DATA = [{"fac": "Dambam General Hospital", "lga": "Dambam", "lat": 11.675414, "lng": 10.698294, "doctors": 1, "nurses": 3, "total_staff": 6, "ambulance": "On-site", "oxy": 0.0, "parto": 0.0, "bp": 0.0, "resus": 0.0, "mpdsr": 0.0, "qi": 0, "qit": 0, "mpcdsr": 1, "blood": 1, "mat_d": 5, "mat_aud": 0, "peri_d": 38, "peri_aud": 0, "rutf": 0, "mms": 0, "pg": 1, "gen": 0, "sol": 1, "drug_pct": 70, "equip_pct": 80, "hygiene_pct": 67}, {"fac": "Itas General Hospital", "lga": "Itas/Gadau", "lat": 11.857747, "lng": 9.966244, "doctors": 1, "nurses": 1, "total_staff": 4, "ambulance": "Linked", "oxy": 97.6, "parto": 0.0, "bp": 43.9, "resus": 100.0, "mpdsr": 100.0, "qi": 0, "qit": 0, "mpcdsr": 1, "blood": 1, "mat_d": 1, "mat_aud": 1, "peri_d": 7, "peri_aud": 0, "rutf": 0, "mms": 1, "pg": 1, "gen": 0, "sol": 1, "drug_pct": 90, "equip_pct": 70, "hygiene_pct": 67}, {"fac": "Dass General Hospital", "lga": "Dass", "lat": 9.999199, "lng": 9.516076, "doctors": 1, "nurses": 5, "total_staff": 1, "ambulance": "On-site", "oxy": 100.0, "parto": 100.0, "bp": 0.0, "resus": 100.0, "mpdsr": 0.0, "qi": 0, "qit": 0, "mpcdsr": 1, "blood": 1, "mat_d": 13, "mat_aud": 0, "peri_d": 37, "peri_aud": 0, "rutf": 0, "mms": 0, "pg": 1, "gen": 1, "sol": 1, "drug_pct": 90, "equip_pct": 80, "hygiene_pct": 100}, {"fac": "General Hospital Ningi", "lga": "Ningi", "lat": 11.071193, "lng": 9.570303, "doctors": 2, "nurses": 7, "total_staff": 9, "ambulance": "On-site", "oxy": 0.0, "parto": 0.0, "bp": 0.0, "resus": 0.0, "mpdsr": 100.0, "qi": 0, "qit": 0, "mpcdsr": 1, "blood": 1, "mat_d": 53, "mat_aud": 53, "peri_d": 33, "peri_aud": 0, "rutf": 0, "mms": 1, "pg": 1, "gen": 1, "sol": 1, "drug_pct": 100, "equip_pct": 70, "hygiene_pct": 33}, {"fac": "Alkaleri General Hospital", "lga": "Alkaleri", "lat": 10.265013, "lng": 10.315937, "doctors": 2, "nurses": 3, "total_staff": 5, "ambulance": "On-site", "oxy": 100.0, "parto": 0.0, "bp": 100.0, "resus": 0.0, "mpdsr": 100.0, "qi": 0, "qit": 0, "mpcdsr": 1, "blood": 1, "mat_d": 18, "mat_aud": 18, "peri_d": 7, "peri_aud": 7, "rutf": 0, "mms": 1, "pg": 1, "gen": 0, "sol": 1, "drug_pct": 80, "equip_pct": 60, "hygiene_pct": 67}, {"fac": "Azare General Hospital", "lga": "Katagum", "lat": 11.682218, "lng": 10.182363, "doctors": 1, "nurses": 6, "total_staff": 9, "ambulance": "Linked", "oxy": 100.0, "parto": 0.0, "bp": 6.5, "resus": 33.3, "mpdsr": 0.0, "qi": 2, "qit": 1, "mpcdsr": 1, "blood": 1, "mat_d": 3, "mat_aud": 0, "peri_d": 36, "peri_aud": 0, "rutf": 0, "mms": 1, "pg": 1, "gen": 0, "sol": 1, "drug_pct": 90, "equip_pct": 80, "hygiene_pct": 67}, {"fac": "Giade General Hospital", "lga": "Giade", "lat": 11.38843, "lng": 10.211547, "doctors": 2, "nurses": 3, "total_staff": 5, "ambulance": "Not available", "oxy": 100.0, "parto": 0.0, "bp": 0.0, "resus": 100.0, "mpdsr": 100.0, "qi": 1, "qit": 1, "mpcdsr": 1, "blood": 1, "mat_d": 5, "mat_aud": 5, "peri_d": 21, "peri_aud": 21, "rutf": 0, "mms": 0, "pg": 0, "gen": 0, "sol": 1, "drug_pct": 90, "equip_pct": 60, "hygiene_pct": 67}, {"fac": "Bauchi Specialist Hospital", "lga": "Bauchi", "lat": 10.317095, "lng": 9.842845, "doctors": 5, "nurses": 40, "total_staff": 5, "ambulance": "On-site", "oxy": 100.0, "parto": 100.0, "bp": 80.0, "resus": 100.0, "mpdsr": 100.0, "qi": 0, "qit": 0, "mpcdsr": 0, "blood": 1, "mat_d": 2, "mat_aud": 2, "peri_d": 15, "peri_aud": 15, "rutf": 0, "mms": 0, "pg": 1, "gen": 1, "sol": 0, "drug_pct": 100, "equip_pct": 100, "hygiene_pct": 100}, {"fac": "Shira Yana General Hospital", "lga": "Shira", "lat": 11.408654, "lng": 10.013768, "doctors": 1, "nurses": 5, "total_staff": 6, "ambulance": "Not available", "oxy": 100.0, "parto": 0.0, "bp": 0.0, "resus": 0.0, "mpdsr": 100.0, "qi": 1, "qit": 1, "mpcdsr": 0, "blood": 1, "mat_d": 1, "mat_aud": 1, "peri_d": 15, "peri_aud": 0, "rutf": 0, "mms": 1, "pg": 1, "gen": 0, "sol": 1, "drug_pct": 100, "equip_pct": 60, "hygiene_pct": 0}, {"fac": "K/Madaki General Hospital", "lga": "Ganjuwa", "lat": 10.67254, "lng": 9.762192, "doctors": 1, "nurses": 6, "total_staff": 8, "ambulance": "On-site", "oxy": 100.0, "parto": 0.0, "bp": 100.0, "resus": 0.0, "mpdsr": 100.0, "qi": 0, "qit": 0, "mpcdsr": 1, "blood": 1, "mat_d": 10, "mat_aud": 10, "peri_d": 6, "peri_aud": 5, "rutf": 0, "mms": 1, "pg": 1, "gen": 1, "sol": 1, "drug_pct": 100, "equip_pct": 90, "hygiene_pct": 67}, {"fac": "Jama'Are General Hospital", "lga": "Jama'are", "lat": 11.656231, "lng": 9.930005, "doctors": 1, "nurses": 2, "total_staff": 2, "ambulance": "Not available", "oxy": 100.0, "parto": 0.0, "bp": 0.0, "resus": 0.0, "mpdsr": 100.0, "qi": 1, "qit": 1, "mpcdsr": 1, "blood": 1, "mat_d": 5, "mat_aud": 5, "peri_d": 31, "peri_aud": 31, "rutf": 0, "mms": 0, "pg": 0, "gen": 0, "sol": 1, "drug_pct": 100, "equip_pct": 60, "hygiene_pct": 0}, {"fac": "Toro General Hospital", "lga": "Toro", "lat": 10.056373, "lng": 9.0415, "doctors": 2, "nurses": 6, "total_staff": 7, "ambulance": "On-site", "oxy": 100.0, "parto": 0.0, "bp": 0.0, "resus": 0.0, "mpdsr": 100.0, "qi": 5, "qit": 1, "mpcdsr": 1, "blood": 1, "mat_d": 9, "mat_aud": 9, "peri_d": 117, "peri_aud": 17, "rutf": 0, "mms": 1, "pg": 1, "gen": 0, "sol": 1, "drug_pct": 80, "equip_pct": 60, "hygiene_pct": 33}, {"fac": "Darazo General Hospital", "lga": "Darazo", "lat": 10.995337, "lng": 10.408732, "doctors": 1, "nurses": 2, "total_staff": 3, "ambulance": "On-site", "oxy": 100.0, "parto": 0.0, "bp": 0.0, "resus": 0.0, "mpdsr": 100.0, "qi": 3, "qit": 0, "mpcdsr": 1, "blood": 1, "mat_d": 5, "mat_aud": 5, "peri_d": 19, "peri_aud": 3, "rutf": 0, "mms": 0, "pg": 1, "gen": 1, "sol": 1, "drug_pct": 80, "equip_pct": 90, "hygiene_pct": 33}, {"fac": "Kirfi General Hospital", "lga": "Kirfi", "lat": 10.39264, "lng": 10.403047, "doctors": 1, "nurses": 2, "total_staff": 4, "ambulance": "Not available", "oxy": 60.0, "parto": 0.0, "bp": 0.0, "resus": 0.0, "mpdsr": 100.0, "qi": 0, "qit": 0, "mpcdsr": 0, "blood": 1, "mat_d": 3, "mat_aud": 3, "peri_d": 30, "peri_aud": 30, "rutf": 0, "mms": 1, "pg": 1, "gen": 0, "sol": 1, "drug_pct": 40, "equip_pct": 40, "hygiene_pct": 100}, {"fac": "Gamawa General Hospital", "lga": "Gamawa", "lat": 12.138914, "lng": 10.532146, "doctors": 1, "nurses": 5, "total_staff": 8, "ambulance": "On-site", "oxy": 100.0, "parto": 0.0, "bp": 100.0, "resus": 100.0, "mpdsr": 100.0, "qi": 1, "qit": 1, "mpcdsr": 1, "blood": 1, "mat_d": 2, "mat_aud": 2, "peri_d": 0, "peri_aud": 0, "rutf": 0, "mms": 1, "pg": 1, "gen": 1, "sol": 1, "drug_pct": 90, "equip_pct": 90, "hygiene_pct": 100}, {"fac": "Women and Children", "lga": "Bauchi", "lat": 10.297144, "lng": 9.845351, "doctors": 1, "nurses": 17, "total_staff": 18, "ambulance": "Not available", "oxy": 10.0, "parto": 10.0, "bp": 100.0, "resus": 0.0, "mpdsr": 0.0, "qi": 1, "qit": 1, "mpcdsr": 1, "blood": 1, "mat_d": 0, "mat_aud": 0, "peri_d": 0, "peri_aud": 0, "rutf": 0, "mms": 1, "pg": 0, "gen": 0, "sol": 1, "drug_pct": 80, "equip_pct": 70, "hygiene_pct": 33}];
+
+// ── MAP (exact from Before.html) ──
+let mapObj=null; let mapLayers={sec:null,phcG:null,phcA:null,phcR:null};
+function initMap(){
+  if(mapObj) return;
+  mapObj=L.map('map').setView([11.0,10.2],8);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:15}).addTo(mapObj);
+
+  function secIcon(d){
+    return L.divIcon({className:'',html:`<div style="width:18px;height:18px;background:#1A5FA8;border:2.5px solid #0B3A6E;border-radius:4px;box-shadow:0 2px 6px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700">H</div>`,iconSize:[18,18],iconAnchor:[9,9]});
+  }
+  function phcIcon(score){
+    const col=score>=80?'#1A8754':score>=60?'#D4820A':'#C0392B';
+    const bdr=score>=80?'#0D5C3A':score>=60?'#8A5300':'#7B2019';
+    const r=Math.max(7,Math.min(12,6+score/14));
+    return L.divIcon({className:'',html:`<div style="width:${r*2}px;height:${r*2}px;background:${col};border:2px solid ${bdr};border-radius:50%;box-shadow:0 1px 5px rgba(0,0,0,0.25);opacity:0.9"></div>`,iconSize:[r*2,r*2],iconAnchor:[r,r]});
+  }
+
+  const secGroup=L.layerGroup();
+  SEC_DATA.forEach(f=>{
+    if(f.lat&&f.lng&&f.lat!==0){
+      const m=L.marker([f.lat,f.lng],{icon:secIcon(f)});
+      const ambBadge=f.ambulance==='On-site'?'<span style="color:#1A8754;font-weight:700">On-site</span>':f.ambulance==='Linked'?'<span style="color:#D4820A;font-weight:700">Linked</span>':'<span style="color:#C0392B;font-weight:700">None</span>';
+      m.bindPopup(`<div style="font-family:DM Sans,sans-serif;min-width:200px"><div style="font-size:13px;font-weight:700;color:#0B1F3A;border-bottom:2px solid #1A5FA8;padding-bottom:5px;margin-bottom:8px">${f.fac}</div><div style="font-size:11px;color:#8A97AB;margin-bottom:6px">&#127758; ${f.lga} LGA &nbsp;|&nbsp; Secondary Hospital</div><table style="font-size:11.5px;width:100%"><tr><td style="padding:2px 0;color:#555">Doctors</td><td style="font-weight:700;text-align:right">${f.doctors}</td></tr><tr><td style="padding:2px 0;color:#555">Nurses</td><td style="font-weight:700;text-align:right">${f.nurses}</td></tr><tr><td style="padding:2px 0;color:#555">Oxytocin</td><td style="font-weight:700;text-align:right">${f.oxy.toFixed(1)}%</td></tr><tr><td style="padding:2px 0;color:#555">Partograph</td><td style="font-weight:700;text-align:right;color:${f.parto<20?'#C0392B':'#1A8754'}">${f.parto.toFixed(1)}%</td></tr><tr><td style="padding:2px 0;color:#555">QI Score</td><td style="font-weight:700;text-align:right">${f.qi}/5</td></tr><tr><td style="padding:2px 0;color:#555">Ambulance</td><td style="text-align:right">${ambBadge}</td></tr></table></div>`);
+      secGroup.addLayer(m);
+    }
+  });
+
+  const phcGGroup=L.layerGroup();
+  const phcAGroup=L.layerGroup();
+  const phcRGroup=L.layerGroup();
+  PHC_DATA.forEach(f=>{
+    if(!f.lat||f.lat===0) return;
+    const icon=phcIcon(f.score);
+    const m=L.marker([f.lat,f.lng],{icon});
+    const transBadge=f.transport.includes('Ambulance')&&!f.transport.includes('Tricycle')?'<span style="color:#1A8754;font-weight:700">Ambulance</span>':f.transport.includes('Tricycle')?'<span style="color:#D4820A;font-weight:700">Tricycle</span>':'<span style="color:#C0392B;font-weight:700">Private Vehicle</span>';
+    const scoreCol=f.score>=80?'#1A8754':f.score>=60?'#D4820A':'#C0392B';
+    m.bindPopup(`<div style="font-family:DM Sans,sans-serif;min-width:200px"><div style="font-size:13px;font-weight:700;color:#0B1F3A;border-bottom:2px solid ${scoreCol};padding-bottom:5px;margin-bottom:8px">${f.fac}</div><div style="font-size:11px;color:#8A97AB;margin-bottom:6px">&#127758; ${f.lga} LGA &nbsp;|&nbsp; ${f.phc_type}</div><div style="font-size:18px;font-weight:700;color:${scoreCol};margin-bottom:6px">IMSS: ${f.score}%</div><table style="font-size:11.5px;width:100%"><tr><td style="padding:2px 0;color:#555">Skilled Staff</td><td style="font-weight:700;text-align:right">${f.skilled}</td></tr><tr><td style="padding:2px 0;color:#555">SBAs</td><td style="font-weight:700;text-align:right">${f.sbas}</td></tr><tr><td style="padding:2px 0;color:#555">Transport</td><td style="text-align:right">${transBadge}</td></tr><tr><td style="padding:2px 0;color:#555">RUTF</td><td style="font-weight:700;text-align:right;color:${f.rutf>0?'#1A8754':'#C0392B'}">${f.rutf>0?'Available':'None'}</td></tr></table></div>`);
+    if(f.score>=80) phcGGroup.addLayer(m);
+    else if(f.score>=60) phcAGroup.addLayer(m);
+    else phcRGroup.addLayer(m);
+  });
+
+  mapLayers={sec:secGroup,phcG:phcGGroup,phcA:phcAGroup,phcR:phcRGroup};
+  Object.values(mapLayers).forEach(l=>l.addTo(mapObj));
+
+  const sorted=[...PHC_DATA].filter(f=>f.lat!==0).sort((a,b)=>b.score-a.score);
+  const topEl=document.getElementById('topPhcList');
+  const botEl=document.getElementById('botPhcList');
+  if(topEl){
+    topEl.innerHTML=sorted.slice(0,10).map((f,i)=>`<div class="ritem"><span style="font-size:10px;font-weight:700;color:#8A97AB;width:16px">${i+1}</span><span class="rname" title="${f.fac}">${f.fac}</span><div class="rbg"><div class="rbf" style="width:${f.score}%;background:var(--green)"></div></div><span class="rval">${f.score}%</span></div>`).join('');
+  }
+  if(botEl){
+    botEl.innerHTML=[...sorted].reverse().slice(0,10).map((f,i)=>`<div class="ritem"><span style="font-size:10px;font-weight:700;color:#8A97AB;width:16px">${i+1}</span><span class="rname" title="${f.fac}">${f.fac}</span><div class="rbg"><div class="rbf" style="width:${f.score}%;background:${f.score<60?'var(--red)':'var(--amber)'}"></div></div><span class="rval">${f.score}%</span></div>`).join('');
+  }
+
+  mkChart('ambMapChart','doughnut',{labels:['On-site','Linked','None'],datasets:[{data:[9,2,5],backgroundColor:[C.g,C.a,C.r],borderWidth:3,borderColor:'#fff'}]},{...BASE,cutout:'60%',plugins:{...BASE.plugins,legend:{position:'right',labels:{font:{family:'DM Sans',size:10},boxWidth:10}}}});
+}
+
+function toggleLayer(name){
+  const checked=document.getElementById('chk'+name.charAt(0).toUpperCase()+name.slice(1)).checked;
+  if(!mapObj||!mapLayers[name]) return;
+  if(checked) mapLayers[name].addTo(mapObj);
+  else mapLayers[name].remove();
+}
+
+function filterMapLGA(){
+  const lga=document.getElementById('mapLgaFilter').value;
+  if(!mapObj) return;
+  Object.values(mapLayers).forEach(l=>{if(l)l.remove();});
+  if(lga==='all'){
+    Object.keys(mapLayers).forEach(k=>{const cb=document.getElementById('chk'+k.charAt(0).toUpperCase()+k.slice(1));if(!cb||cb.checked)mapLayers[k].addTo(mapObj);});
+    mapObj.setView([11.0,10.2],8);
+    return;
+  }
+  const pts=[];
+  SEC_DATA.filter(f=>f.lga===lga&&f.lat&&f.lat!==0).forEach(f=>{
+    mapLayers.sec.eachLayer(m=>{const ll=m.getLatLng();if(Math.abs(ll.lat-f.lat)<0.001)pts.push(ll);});
+    mapLayers.sec.addTo(mapObj);
+  });
+  ['phcG','phcA','phcR'].forEach(k=>{
+    PHC_DATA.filter(f=>f.lga===lga&&f.lat&&f.lat!==0).forEach(f=>{
+      mapLayers[k].eachLayer(m=>{const ll=m.getLatLng();if(Math.abs(ll.lat-f.lat)<0.001)pts.push(ll);});
+    });
+    mapLayers[k].addTo(mapObj);
+  });
+  if(pts.length>0){const bounds=L.latLngBounds(pts);mapObj.fitBounds(bounds,{padding:[30,30]});}
+}
+
+// ═══════════════════════════════════════════════
 //  TAB SWITCHING
 // ═══════════════════════════════════════════════
 const INIT_MAP={
   overview:()=>{renderLGAChart();renderProcessChart();updateRadar();renderReadinessPie();},
+  map:initMap,
   staff:()=>{updateStaffChart();updatePhcStaffChart();updateTrainChart();updateHrhChart();},
   mnch:()=>{updateMnchProcChart();updatePhcMnchChart();},
   nutrition:()=>{updateNutriChart();renderNutriRadar();renderNutriLGA();},
@@ -2493,8 +2487,7 @@ const INIT_MAP={
   referral:()=>{renderReferralCharts();updatePhcReferralChart();},
   mortality:()=>{updateMortCharts();updatePeriChart();updateQIChart();},
   power:()=>{updatePowerSecChart();updatePowerPhcChart();renderPowerLGA();},
-  tables:()=>{buildSecTable();buildPhcTable();},
-  gismap:()=>{initGisMap();}
+  tables:()=>{buildSecTable();buildPhcTable();}
 };
 const inited=new Set();
 
